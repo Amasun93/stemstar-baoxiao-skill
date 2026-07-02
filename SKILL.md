@@ -1,6 +1,6 @@
 ---
 name: stemstar-baoxiao-skill
-description: Organize StemStar reimbursement materials for Sun David/StemStar workflows. Use when the user asks to check reimbursement naming, sort invoices/receipts/order screenshots/payment screenshots/itineraries, place new materials into the current month's pending reimbursement folder, or move submitted items into monthly archived folders named like YYMM 报销-amount.
+description: Organize StemStar reimbursement materials for Sun David/StemStar workflows. Use when the user asks to check reimbursement naming, sort invoices/receipts/order screenshots/payment screenshots/itineraries, place new materials into the current month's YYMM 待报销 folder, replace generic folders like 待整理 or 6月 with YYMM 待报销, or move submitted items into monthly archived folders named like YYMM 报销-amount.
 ---
 
 # StemStar Baoxiao Skill
@@ -28,13 +28,15 @@ Use these top-level folders:
 
 - `YYMM 待报销`: current month materials not yet submitted.
 - `00 归档/YYMM 报销-总金额`: materials already submitted for that month.
-- `待确认材料`: materials whose amount, month, or relationship cannot be verified safely.
+
+Do not use generic root-level folders such as `待整理`, `待处理`, or plain month names such as `6月`. If they already exist, migrate their contents into the appropriate `YYMM 待报销` folder and remove the empty legacy folder. If a material's month is unclear, put it under the current `YYMM 待报销/待确认材料` rather than creating root-level `待整理`.
 
 Use two-digit year and month, for example:
 
 - `2607 待报销`
 - `2606 报销-2334.49`
 - `2511 报销-5449.50`
+- `2607 待报销/待确认材料`
 
 Inside a monthly folder, group each reimbursement item as:
 
@@ -99,6 +101,7 @@ When a material is missing:
 
 - Keep the item in the correct pending folder if the user is still preparing it.
 - Add `待补发票`, `待补行程单`, or similar only when it helps the user see the gap.
+- Put ambiguous materials in `YYMM 待报销/待确认材料`, not in a root-level `待整理` folder.
 - Once the missing material is supplied, rename the existing placeholder file to remove `待补`.
 
 ## Pending Workflow
@@ -107,11 +110,12 @@ When the user supplies new materials and asks to organize them:
 
 1. Identify the month from invoice dates, travel dates, payment dates, or user context.
 2. Create or reuse `YYMM 待报销`.
-3. Create item folders using `金额 事项名称`.
-4. Create detail folders if there are multiple categories, such as train, flight, taxi, hotel, software, or meals.
-5. Copy supplied Desktop or attachment files into the appropriate folder; do not delete originals.
-6. Rename files according to the naming rules.
-7. Report the folder path, total amount, mismatches, and missing materials.
+3. If root-level `待整理` or a plain month folder contains pending materials, migrate those materials into `YYMM 待报销`; remove the legacy folder only after confirming it is empty.
+4. Create item folders using `金额 事项名称`.
+5. Create detail folders if there are multiple categories, such as train, flight, taxi, hotel, software, or meals.
+6. Copy supplied Desktop or attachment files into the appropriate folder; do not delete originals.
+7. Rename files according to the naming rules.
+8. Report the folder path, total amount, mismatches, and missing materials.
 
 ## Submitted Archive Workflow
 
@@ -135,7 +139,7 @@ When the user asks to clean old archives:
 2. Normalize roots to `YYMM 报销-金额` when month and total are reliable.
 3. Merge multiple submitted folders from the same month into one monthly folder and update the total.
 4. Preserve old nested item folders unless the user asks to rename files inside them.
-5. Move empty or ambiguous legacy folders to `待确认材料`; do not delete them.
+5. Move empty or ambiguous legacy folders to a clearly named `待确认材料` folder inside the relevant archive or pending month; do not create root-level `待整理`.
 6. Summarize which folders were normalized and which need manual confirmation.
 
 ## Safety
@@ -144,4 +148,5 @@ When the user asks to clean old archives:
 - Do not overwrite existing folders or files. If a destination exists, inspect and choose a non-destructive path or ask the user.
 - Do not use broad destructive cleanup. Deleting raw reimbursement files is out of scope unless explicitly requested.
 - Preserve unrelated folders.
+- Keep the reimbursement root easy to scan: normally only `00 归档`, one or more `YYMM 待报销` folders, and reference files such as `报销细则.pptx` should remain there.
 - Keep final summaries concise: state the new path, total, important mismatches, and pending gaps.
