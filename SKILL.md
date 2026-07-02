@@ -1,6 +1,6 @@
 ---
 name: stemstar-baoxiao-skill
-description: Organize StemStar reimbursement materials for Sun David/StemStar workflows. Use when the user asks to check reimbursement naming, sort invoices/receipts/order screenshots/payment screenshots/itineraries, place new materials into the current month's YYMM 待报销 folder, replace generic folders like 待整理 or 6月 with YYMM 待报销, or move submitted items into monthly archived folders named like YYMM 报销-amount.
+description: Organize and audit StemStar reimbursement materials for Sun David/StemStar workflows. Use when the user asks to check reimbursement naming, verify whether invoices/receipts/order screenshots/payment screenshots/itineraries are complete, remind them about missing or mismatched amounts, place new materials into the current month's YYMM 待报销 folder, replace generic folders like 待整理 or 6月 with YYMM 待报销, or move submitted items into monthly archived folders named like YYMM 报销-amount.
 ---
 
 # StemStar Baoxiao Skill
@@ -12,7 +12,8 @@ Use this skill to organize reimbursement materials in the local reimbursement wo
 1. Put new, unsubmitted materials into a monthly pending folder.
 2. Normalize item folders and file names by amount, event, route, and material type.
 3. Check amount consistency across invoices, payment screenshots, order screenshots, itineraries, and zip contents.
-4. After the user says items were submitted, move them into `00 归档/YYMM 报销-总金额`.
+4. Remind the user about missing invoices, missing itineraries, amount mismatches, unclear payers/buyers, or routes that do not match.
+5. After the user says items were submitted, move them into `00 归档/YYMM 报销-总金额`.
 
 ## Workspace
 
@@ -90,6 +91,17 @@ Before moving or renaming, inspect the available evidence:
 
 Use exact decimal arithmetic for totals. Do not round away cents.
 
+Always reconcile at least these totals before saying materials are ready:
+
+- Item folder amount.
+- Detail folder amount.
+- Invoice total.
+- Payment screenshot total.
+- Order screenshot total.
+- Itinerary total when available.
+
+If any total differs, report the exact equation and gap. Example: `返程支付截图 415 = 发票 284 + 87 + 缺口 44`, so the user knows which material to ask for.
+
 When invoice amount and paid amount differ:
 
 - Use the user's stated reimbursement basis if provided.
@@ -104,6 +116,18 @@ When a material is missing:
 - Put ambiguous materials in `YYMM 待报销/待确认材料`, not in a root-level `待整理` folder.
 - Once the missing material is supplied, rename the existing placeholder file to remove `待补`.
 
+## Check And Reminder Workflow
+
+For every reimbursement item, produce a short audit result before finalizing:
+
+1. State whether the item is complete or incomplete.
+2. List present evidence by material type, such as invoice, payment screenshot, order screenshot, and itinerary.
+3. Show the amount reconciliation in one line.
+4. Call out missing materials in direct language, for example `缺 44 元火车票发票`.
+5. If the user has already submitted the item, still report the issue so they can follow up with the recipient.
+
+Do not silently archive or mark an item as ready when the payment/order total is higher than the invoice total and the difference is unexplained.
+
 ## Pending Workflow
 
 When the user supplies new materials and asks to organize them:
@@ -115,7 +139,7 @@ When the user supplies new materials and asks to organize them:
 5. Create detail folders if there are multiple categories, such as train, flight, taxi, hotel, software, or meals.
 6. Copy supplied Desktop or attachment files into the appropriate folder; do not delete originals.
 7. Rename files according to the naming rules.
-8. Report the folder path, total amount, mismatches, and missing materials.
+8. Report the folder path, total amount, reconciliation result, mismatches, and missing materials.
 
 ## Submitted Archive Workflow
 
@@ -127,7 +151,7 @@ When the user says an item has been submitted or asks to archive it:
 4. If no archive folder exists, create `00 归档/YYMM 报销-总金额`.
 5. If an archive folder exists, move the submitted item into it and rename the archive folder so the total equals old total plus submitted total.
 6. Leave unsubmitted items in `YYMM 待报销`.
-7. Report the new archive path and what remains pending.
+7. Report the new archive path, reconciliation result, missing material reminders, and what remains pending.
 
 If multiple archive folders exist for the same `YYMM`, inspect before merging. If there are duplicate item names, stop and ask the user which version to keep.
 
@@ -149,4 +173,4 @@ When the user asks to clean old archives:
 - Do not use broad destructive cleanup. Deleting raw reimbursement files is out of scope unless explicitly requested.
 - Preserve unrelated folders.
 - Keep the reimbursement root easy to scan: normally only `00 归档`, one or more `YYMM 待报销` folders, and reference files such as `报销细则.pptx` should remain there.
-- Keep final summaries concise: state the new path, total, important mismatches, and pending gaps.
+- Keep final summaries concise: state the new path, total, reconciliation equation, important mismatches, and pending gaps.
