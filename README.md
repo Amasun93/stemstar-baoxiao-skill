@@ -2,6 +2,31 @@
 
 StemStar 报销材料整理与归档 skill，用于让 Codex 按统一规则整理发票、订单截图、支付截图、行程单等报销材料。
 
+## 怎么使用
+
+这个 skill 能用来：帮你检查报销材料是否齐全、统一文件命名、按月份放入 `YYMM 待报销`，并在材料提报后归档到 `00 归档/YYMM 报销-总金额`。
+
+请把这个链接复制给你的 AI：
+
+```text
+https://github.com/Amasun93/stemstar-baoxiao-skill
+```
+
+可以直接这样对 AI 说：
+
+```text
+请使用这个 skill 帮我整理报销材料：
+https://github.com/Amasun93/stemstar-baoxiao-skill
+
+我的需求是：检查材料、按金额和事项重命名、放入当月 YYMM 待报销；等我说已经提报后，再归档到 00 归档/YYMM 报销-总金额。
+```
+
+如果你的 AI 支持本地安装 skill，可以把这个仓库放到 Codex skills 目录下：
+
+```powershell
+git clone https://github.com/Amasun93/stemstar-baoxiao-skill.git "$env:USERPROFILE\.codex\skills\stemstar-baoxiao-skill"
+```
+
 ## 适用场景
 
 - 检查报销材料文件名是否规范
@@ -66,15 +91,7 @@ YYMM 报销-总金额
       └─ 92.29 武汉讲座打车_武汉大学-天河机场_行程单(票面77.29).pdf
 ```
 
-## 使用方式
-
-把这个仓库放到 Codex skills 目录下：
-
-```powershell
-git clone https://github.com/Amasun93/stemstar-baoxiao-skill.git "$env:USERPROFILE\.codex\skills\stemstar-baoxiao-skill"
-```
-
-之后在 Codex 里可以这样说：
+安装后，在 Codex 里可以这样说：
 
 ```text
 用 stemstar-baoxiao-skill 帮我整理这些报销材料
